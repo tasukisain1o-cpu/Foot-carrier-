@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>My Football Career: PRO</title>
+<style>
+:root{--bg:#0a0a0a;--app:#161616;--card:#1f1f1f;--card2:#252525;--green:#4caf50;--green-d:#388e3c;--blue:#2196f3;--orange:#ff9800;--red:#f44336;--purple:#7b1fa2;--yellow:#ffeb3b;--text:#e8e8e8;--muted:#888;--border:#2e2e2e}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;justify-content:center;align-items:center;min-height:100vh;padding:8px;overflow:hidden}
+#app{width:100%;max-width:420px;height:96vh;max-height:820px;background:var(--app);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.9);border:1px solid var(--border);position:relative}
+
+.hdr{background:linear-gradient(135deg,#4a148c,#7b1fa2);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.hdr-title{font-weight:800;font-size:.85em;letter-spacing:1.5px;text-transform:uppercase}
+.hdr-title small{display:block;font-size:.6em;opacity:.7;font-weight:500;letter-spacing:.5px}
+.hdr-tr{font-size:.7em;font-weight:700;color:var(--yellow);text-align:right;line-height:1.3}
+.hdr-tr span{display:block}
+
+.status{display:grid;grid-template-columns:repeat(5,1fr);background:#1c1c1c;padding:6px 4px;font-size:.58em;border-bottom:1px solid var(--border);flex-shrink:0}
+.status>div{text-align:center;color:var(--muted);text-transform:uppercase;letter-spacing:.3px}
+.status>div b{display:block;color:var(--text);font-size:1.4em;margin-top:1px;font-weight:700}
+.form-hot{color:#ff5722!important}.form-good{color:#8bc34a!important}.form-ok{color:#ffc107!important}.form-bad{color:#ff9800!important}.form-cold{color:#64b5f6!important}
+.injury-active{color:var(--red)!important;animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.4}}
+
+.stats{display:grid;grid-template-columns:repeat(7,1fr);background:linear-gradient(180deg,#6a1b9a,#4a148c);padding:6px 2px;flex-shrink:0}
+.stats>div{text-align:center;font-size:.5em;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.5px}
+.stats>div b{display:block;font-size:1.5em;color:var(--yellow);margin-top:1px;font-weight:800}
+
+.timeline{display:flex;gap:3px;padding:6px 8px;background:#1c1c1c;overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.timeline::-webkit-scrollbar{display:none}
+.tl-age{padding:3px 7px;border-radius:6px;background:#2a2a2a;font-size:.62em;font-weight:600;color:var(--muted);white-space:nowrap;transition:all .3s}
+.tl-age.active{background:var(--green);color:white;font-weight:800;transform:scale(1.15);box-shadow:0 0 12px rgba(76,175,80,.6)}
+.tl-age.done{background:#1a3a1a;color:#4caf50}
+
+.content{flex:1;overflow-y:auto;padding:12px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.content::-webkit-scrollbar{width:4px}
+.content::-webkit-scrollbar-thumb{background:#333;border-radius:4px}
+
+.card{background:var(--card);border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid var(--border)}
+.card-title{font-size:.65em;font-weight:800;color:var(--orange);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:5px}
+
+.btn{width:100%;padding:11px;border:none;border-radius:10px;background:var(--green);color:white;font-weight:700;font-size:.82em;cursor:pointer;margin-top:6px;transition:all .15s;font-family:inherit;letter-spacing:.3px}
+.btn:hover{background:var(--green-d);transform:translateY(-1px)}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-blue{background:var(--blue)}.btn-blue:hover{background:#1976d2}
+.btn-gray{background:#333}.btn-gray:hover{background:#444}
+.btn-red{background:var(--red);font-size:.7em;padding:8px}.btn-red:hover{background:#d32f2f}
+.btn-yellow{background:var(--orange);color:#000}.btn-yellow:hover{background:#e68900}
+
+.event-box{background:linear-gradient(135deg,#2a1a0a,#3a2010);border-left:3px solid var(--orange);border-radius:10px;padding:10px 12px;font-size:.78em;line-height:1.4;margin-bottom:10px}
+.event-box b{color:var(--orange);font-size:.85em;display:block;margin-bottom:3px;letter-spacing:.5px}
+
+/* FIFA-style match card */
+.fifa-match{background:linear-gradient(135deg,#1a2a3a,#0f1a25);border-radius:12px;padding:10px 12px;margin-bottom:6px;border:1px solid #2a4a6a;position:relative;overflow:hidden}
+.fifa-match.w{border-color:#2e7d32;background:linear-gradient(135deg,#1a2a1a,#0f250f)}
+.fifa-match.l{border-color:#7d2e2e;background:linear-gradient(135deg,#2a1a1a,#250f0f)}
+.fifa-match.d{border-color:#7d5a2e;background:linear-gradient(135deg,#2a241a,#25200f)}
+.fifa-match.miss{opacity:.4;filter:grayscale(.8)}
+.fifa-comp{font-size:.55em;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:6px;display:flex;justify-content:space-between}
+.fifa-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.fifa-team{display:flex;align-items:center;gap:6px;font-size:.75em;font-weight:600}
+.fifa-team.home{justify-content:flex-end;text-align:right}
+.fifa-team.away{justify-content:flex-start;text-align:left}
+.fifa-team .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
+.fifa-score{background:#000;color:var(--yellow);font-weight:900;font-size:1.1em;padding:4px 10px;border-radius:6px;letter-spacing:2px;font-family:'Courier New',monospace;border:1px solid #333}
+.fifa-foot{display:flex;justify-content:center;gap:8px;margin-top:6px;font-size:.65em;color:var(--muted)}
+.fifa-goal{color:var(--green);font-weight:700}
+.fifa-badge{width:22px;height:22px;object-fit:contain;background:#fff;border-radius:50%;padding:1px;flex-shrink:0}
+
+.match{display:grid;grid-template-columns:18px 1fr 44px 30px 22px;gap:6px;align-items:center;padding:7px 8px;background:var(--card2);border-radius:7px;margin-bottom:4px;font-size:.72em;border-left:3px solid #333}
+.match.w{border-left-color:var(--green)}.match.l{border-left-color:var(--red)}.match.d{border-left-color:var(--orange)}
+.match.miss{opacity:.5}.match .opp{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.match .score{font-weight:800;color:var(--yellow);text-align:center;font-size:1.1em}
+.match .pg{text-align:center;color:var(--green);font-weight:700}.match .pg.empty{color:#444}
+.match .res{text-align:center;font-size:.9em}
+
+.train-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px}
+.train-btn{background:#2a2a2a;border:1.5px solid #3a3a3a;color:var(--text);padding:8px 3px;border-radius:9px;font-size:.6em;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.train-btn:hover{background:var(--purple);border-color:#9c27b0}
+.train-btn:active{transform:scale(.96)}
+.train-btn .val{display:block;font-size:1.5em;color:var(--yellow);margin-top:2px;font-weight:800}
+
+.shop-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.shop-btn{background:#1a1a1a;border:1px solid #333;color:var(--text);padding:8px;border-radius:9px;font-size:.65em;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.shop-btn:hover{background:#2a2a2a;border-color:var(--green)}
+.shop-btn b{display:block;font-size:.95em;margin-bottom:2px}
+.shop-btn small{color:var(--muted);font-size:.9em}
+.shop-btn.bought{border-color:var(--green);background:#1a2a1a}
+
+.club-card{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:10px;padding:10px;margin-bottom:6px;border-left:3px solid var(--green)}
+.club-logo{width:34px;height:34px;object-fit:contain;background:white;border-radius:50%;padding:3px;flex-shrink:0}
+.club-info{flex:1;min-width:0}
+.club-info h3{font-size:.82em;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.club-info p{font-size:.65em;color:var(--muted);margin-top:1px}
+.club-price{color:var(--green);font-weight:800;font-size:.8em;white-space:nowrap}
+
+.summary-bar{display:flex;justify-content:space-around;background:#1a1a1a;border-radius:9px;padding:8px;margin-bottom:10px;font-size:.65em}
+.summary-bar div{text-align:center;color:var(--muted)}
+.summary-bar b{display:block;color:var(--text);font-size:1.4em;font-weight:800;margin-top:2px}
+
+/* START SCREEN */
+.start-hero{text-align:center;padding:20px 10px;margin-bottom:10px}
+.start-hero h1{font-size:1.4em;background:linear-gradient(135deg,#4caf50,#2196f3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:900;letter-spacing:2px;margin-bottom:6px}
+.start-hero p{font-size:.75em;color:var(--muted)}
+
+.field-label{font-size:.7em;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:12px 0 6px;font-weight:700}
+.input-row{display:flex;gap:6px}
+.input-box{flex:1;background:#1a1a1a;border:1px solid #333;border-radius:9px;padding:10px 12px;color:var(--text);font-size:.85em;font-family:inherit;font-weight:600}
+.input-box:focus{outline:none;border-color:var(--purple)}
+.roll-btn{background:var(--purple);border:none;border-radius:9px;padding:0 14px;color:white;font-size:1.1em;cursor:pointer;font-weight:700}
+.roll-btn:hover{background:#9c27b0}
+
+.pos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.pos-btn{background:#1a1a1a;border:2px solid #333;color:var(--muted);padding:9px 4px;border-radius:9px;font-size:.7em;font-weight:700;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.pos-btn:hover{background:#2a2a2a;border-color:#555}
+.pos-btn.sel{background:var(--green);color:#000;border-color:var(--green);transform:scale(1.03)}
+
+.nt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;max-height:180px;overflow-y:auto;padding-right:4px}
+.nt-btn{background:#1a1a1a;border:2px solid #333;color:var(--text);padding:6px 3px;border-radius:9px;font-size:.6em;font-weight:600;cursor:pointer;text-align:center;transition:all .15s;font-family:inherit}
+.nt-btn:hover{background:#2a2a2a}
+.nt-btn.sel{border-color:var(--green);background:#1a2a1a}
+.nt-btn img{width:24px;height:16px;object-fit:cover;border-radius:2px;display:block;margin:0 auto 3px;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.nt-btn .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* WC TABLE */
+.group-table{background:#1a1a1a;border-radius:10px;padding:8px;font-size:.7em;margin-bottom:8px}
+.gt-row{display:grid;grid-template-columns:20px 1fr 24px 24px 24px 30px;gap:5px;padding:5px 4px;align-items:center;border-bottom:1px solid #252525}
+.gt-row:last-child{border:none}
+.gt-row.head{color:var(--muted);font-size:.85em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #333}
+.gt-row.you{background:#1a2a1a;border-radius:5px;color:var(--yellow);font-weight:700}
+.gt-row.qual{border-left:3px solid var(--green);padding-left:2px}
+.gt-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.gt-name img{width:18px;height:12px;object-fit:cover;border-radius:2px}
+.gt-pts{font-weight:800;color:var(--yellow);text-align:center}
+
+/* AGENT */
+.agent-card{background:linear-gradient(135deg,#2a1a3a,#1a0f25);border:1px solid #5a3a7a;border-radius:12px;padding:12px;margin-bottom:10px}
+.agent-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.agent-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#7b1fa2,#4a148c);display:flex;align-items:center;justify-content:center;font-size:1.3em}
+.agent-name{font-size:.85em;font-weight:700}
+.agent-name small{display:block;color:var(--muted);font-weight:400;font-size:.85em}
+.agent-msg{font-size:.75em;line-height:1.4;color:#ddd;background:#1a1a1a;padding:8px 10px;border-radius:8px;margin-bottom:8px;border-left:2px solid var(--purple)}
+.contract-row{display:flex;justify-content:space-between;font-size:.7em;padding:3px 0;color:var(--muted)}
+.contract-row b{color:var(--text)}
+
+.end-hero{text-align:center;padding:10px 0}
+.end-hero h2{font-size:1.1em;color:var(--yellow);margin-bottom:6px}
+.end-hero .legacy{font-size:.95em;font-weight:800;margin:8px 0;padding:8px;background:linear-gradient(135deg,#2a1a4a,#4a1a6a);border-radius:10px}
+.end-stats{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:10px 0;font-size:.72em}
+.end-stats div{background:var(--card);padding:8px;border-radius:8px;text-align:center}
+.end-stats b{display:block;color:var(--yellow);font-size:1.3em;margin-top:2px}
+.history-list{max-height:150px;overflow-y:auto;background:#1a1a1a;border-radius:8px;padding:8px;font-size:.7em;margin-top:8px}
+.history-list::-webkit-scrollbar{width:3px}
+.history-list::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.hist-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #252525}
+.hist-item:last-child{border:none}
+
+.text-center{text-align:center}.mb-8{margin-bottom:8px}.mt-8{margin-top:8px}
+.muted{color:var(--muted);font-size:.7em}
+.hl{color:var(--yellow);font-weight:700}.hl-g{color:var(--green);font-weight:700}
+.fade{animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div class="hdr-title" id="hdrName">⚽ My Career<small>PRO EDITION</small></div>
+    <div class="hdr-tr" id="trophyBox">
+      <span id="tClub">🏆 0</span>
+      <span id="tCL">⭐ 0</span>
+      <span id="tNT">🌍 0</span>
+    </div>
+  </div>
+  <div class="status" id="statusBar" style="display:none">
+    <div>Возраст<b id="sAge">16</b></div>
+    <div>OVR<b id="sOvr">-</b></div>
+    <div>Мораль<b id="sMorale">75</b></div>
+    <div>Форма<b id="sForm">😐</b></div>
+    <div>Травма<b id="sInjury">—</b></div>
+  </div>
+  <div class="stats" id="statsBar" style="display:none">
+    <div>PAC<b id="stPac">-</b></div>
+    <div>SHO<b id="stSho">-</b></div>
+    <div>PAS<b id="stPas">-</b></div>
+    <div>DRI<b id="stDri">-</b></div>
+    <div>DEF<b id="stDef">-</b></div>
+    <div>PHY<b id="stPhy">-</b></div>
+    <div>TRS<b id="stTrust">-</b></div>
+  </div>
+  <div class="timeline" id="timeline" style="display:none"></div>
+  <div class="content" id="content"></div>
+</div>
+
+<script>
+/* ============================================================
+   МАССИВЫ ДАННЫХ
+============================================================ */
+const CLUBS=[
+{name:"Спортинг",country:"Португалия",flag:"pt",str:78},{name:"Бенфика",country:"Португалия",flag:"pt",str:80},{name:"Порту",country:"Португалия",flag:"pt",str:79},
+{name:"Реал Мадрид",country:"Испания",flag:"es",str:95},{name:"Барселона",country:"Испания",flag:"es",str:88},{name:"Атлетико",country:"Испания",flag:"es",str:88},
+{name:"Севилья",country:"Испания",flag:"es",str:78},{name:"Бетис",country:"Испания",flag:"es",str:77},{name:"Реал Сосьедад",country:"Испания",flag:"es",str:78},
+{name:"Валенсия",country:"Испания",flag:"es",str:75},{name:"Вильярреал",country:"Испания",flag:"es",str:80},{name:"Райо Вальекано",country:"Испания",flag:"es",str:70},
+{name:"Атлетик Бильбао",country:"Испания",flag:"es",str:78},{name:"Жирона",country:"Испания",flag:"es",str:76},
+{name:"Ман Сити",country:"Англия",flag:"gb-eng",str:92},{name:"Ливерпуль",country:"Англия",flag:"gb-eng",str:89},{name:"Арсенал",country:"Англия",flag:"gb-eng",str:86},
+{name:"Челси",country:"Англия",flag:"gb-eng",str:84},{name:"МЮ",country:"Англия",flag:"gb-eng",str:83},{name:"Тоттенхэм",country:"Англия",flag:"gb-eng",str:80},
+{name:"Ньюкасл",country:"Англия",flag:"gb-eng",str:82},{name:"Астон Вилла",country:"Англия",flag:"gb-eng",str:81},{name:"Вест Хэм",country:"Англия",flag:"gb-eng",str:76},
+{name:"Брайтон",country:"Англия",flag:"gb-eng",str:78},{name:"Лестер",country:"Англия",flag:"gb-eng",str:74},
+{name:"Бавария",country:"Германия",flag:"de",str:90},{name:"Боруссия Д",country:"Германия",flag:"de",str:85},{name:"Лейпциг",country:"Германия",flag:"de",str:83},
+{name:"Байер",country:"Германия",flag:"de",str:84},{name:"Штутгарт",country:"Германия",flag:"de",str:78},{name:"Айнтрахт",country:"Германия",flag:"de",str:77},
+{name:"Ювентус",country:"Италия",flag:"it",str:83},{name:"Милан",country:"Италия",flag:"it",str:82},{name:"Интер",country:"Италия",flag:"it",str:86},
+{name:"Наполи",country:"Италия",flag:"it",str:84},{name:"Рома",country:"Италия",flag:"it",str:81},{name:"Лацио",country:"Италия",flag:"it",str:79},
+{name:"Аталанта",country:"Италия",flag:"it",str:82},{name:"Фиорентина",country:"Италия",flag:"it",str:77},
+{name:"ПСЖ",country:"Франция",flag:"fr",str:88},{name:"Марсель",country:"Франция",flag:"fr",str:78},{name:"Монако",country:"Франция",flag:"fr",str:80},
+{name:"Лион",country:"Франция",flag:"fr",str:77},{name:"Лилль",country:"Франция",flag:"fr",str:76},
+{name:"Аякс",country:"Нидерланды",flag:"nl",str:80},{name:"ПСВ",country:"Нидерланды",flag:"nl",str:79},{name:"Фейеноорд",country:"Нидерланды",flag:"nl",str:78},
+{name:"Галатасарай",country:"Турция",flag:"tr",str:78},{name:"Фенербахче",country:"Турция",flag:"tr",str:77},{name:"Бешикташ",country:"Турция",flag:"tr",str:75},
+{name:"Аль-Наср",country:"Саудовская Арабия",flag:"sa",str:82},{name:"Аль-Хиляль",country:"Саудовская Арабия",flag:"sa",str:83},{name:"Аль-Иттихад",country:"Саудовская Арабия",flag:"sa",str:80},
+{name:"Фламенго",country:"Бразилия",flag:"br",str:82},{name:"Палмейрас",country:"Бразилия",flag:"br",str:83},{name:"Ботафого",country:"Бразилия",flag:"br",str:78},
+{name:"Ривер Плейт",country:"Аргентина",flag:"ar",str:80},{name:"Бока Хуниорс",country:"Аргентина",flag:"ar",str:78},
+{name:"Шахтёр",country:"Украина",flag:"ua",str:75},{name:"Динамо Киев",country:"Украина",flag:"ua",str:74},
+{name:"Зенит",country:"Россия",flag:"ru",str:78},{name:"ЦСКА",country:"Россия",flag:"ru",str:75},{name:"Спартак",country:"Россия",flag:"ru",str:73},
+{name:"Краснодар",country:"Россия",flag:"ru",str:74},{name:"Локомотив",country:"Россия",flag:"ru",str:72},
+{name:"Серветт",country:"Швейцария",flag:"ch",str:68},{name:"Базель",country:"Швейцария",flag:"ch",str:72},
+{name:"Селтик",country:"Шотландия",flag:"gb-sct",str:74},{name:"Рейнджерс",country:"Шотландия",flag:"gb-sct",str:73}
+];
+
+const NTS=[
+{name:"Португалия",flag:"pt",str:87},{name:"Испания",flag:"es",str:88},{name:"Франция",flag:"fr",str:92},
+{name:"Англия",flag:"gb-eng",str:89},{name:"Бразилия",flag:"br",str:91},{name:"Аргентина",flag:"ar",str:90},
+{name:"Германия",flag:"de",str:86},{name:"Италия",flag:"it",str:84},{name:"Нидерланды",flag:"nl",str:85},
+{name:"Бельгия",flag:"be",str:82},{name:"Хорватия",flag:"hr",str:80},{name:"Уругвай",flag:"uy",str:79},
+{name:"Марокко",flag:"ma",str:78},{name:"Сенегал",flag:"sn",str:77},{name:"Япония",flag:"jp",str:76},
+{name:"США",flag:"us",str:74},{name:"Мексика",flag:"mx",str:75},{name:"Швейцария",flag:"ch",str:76},
+{name:"Дания",flag:"dk",str:78},{name:"Сербия",flag:"rs",str:74},{name:"Польша",flag:"pl",str:73},
+{name:"Украина",flag:"ua",str:72},{name:"Турция",flag:"tr",str:74},{name:"Швеция",flag:"se",str:73}
+];
+
+const NAME_POOL={
+pt:{f:['João','Pedro','Rui','Diogo','Bruno','Bernardo','Tiago','André','Rafael','Gonçalo'],l:['Silva','Santos','Ferreira','Costa','Pereira','Oliveira','Rodrigues','Gomes','Lopes','Martins']},
+es:{f:['Sergio','Carlos','Diego','Javier','Pablo','Marco','Álvaro','Iker','Rodrigo','Adrián'],l:['García','Martínez','López','González','Rodríguez','Fernández','Sánchez','Ramírez','Torres','Navarro']},
+fr:{f:['Antoine','Kylian','Olivier','Hugo','Lucas','Théo','Mathéo','Enzo','Nathan','Ethan'],l:['Martin','Bernard','Dubois','Thomas','Robert','Richard','Petit','Durand','Leroy','Moreau']},
+'gb-eng':{f:['Harry','Jack','Jude','Phil','Marcus','Mason','Declan','Bukayo','Cole','Reece'],l:['Smith','Jones','Taylor','Brown','Williams','Wilson','Johnson','Davies','Robinson','Walker']},
+br:{f:['Vinícius','Rodrygo','Éder','Gabriel','Lucas','Matheus','Rafael','Bruno','Danilo','Éverton'],l:['Silva','Santos','Oliveira','Souza','Lima','Costa','Ribeiro','Almeida','Nascimento','Carvalho']},
+ar:{f:['Lionel','Julián','Lautaro','Enzo','Alexis','Nicolás','Emiliano','Ángel','Rodrigo','Facundo'],l:['Martínez','Fernández','Gómez','Pérez','López','Díaz','Álvarez','Romero','Sosa','Acuña']},
+de:{f:['Jamal','Florian','Kai','Leroy','Joshua','Leon','Niclas','Thomas','Antonio','Robin'],l:['Müller','Schmidt','Schneider','Fischer','Weber','Meyer','Wagner','Becker','Hoffmann','Schäfer']},
+it:{f:['Federico','Nicolò','Sandro','Lorenzo','Giacomo','Matteo','Alessandro','Davide','Marco','Riccardo'],l:['Rossi','Russo','Ferrari','Esposito','Bianchi','Romano','Colombo','Ricci','Marino','Greco']},
+nl:{f:['Virgil','Frenkie','Cody','Denzel','Xavi','Ryan','Matthijs','Daley','Steven','Nathan'],l:['De Jong','Van Dijk','Bakker','De Vries','Van den Berg','Smit','Visser','Jansen','De Boer','Van Leeuwen']},
+be:{f:['Kevin','Romelu','Thibaut','Eden','Youri','Leandro','Jérémy','Amadou','Charles','Arthur'],l:['De Bruyne','Lukaku','Courtois','Hazard','Tielemans','Trossard','Doku','Onana','Vanhaezebrouck','Vermaelen']},
+hr:{f:['Luka','Mateo','Ivan','Ante','Marcelo','Josip','Mario','Nikola','Andrej','Borna'],l:['Modrić','Kovačić','Perišić','Rakitić','Brozović','Gvardiol','Pašalić','Vlašić','Kramarić','Sosa']},
+uy:{f:['Federico','Darwin','Ronald','Rodrigo','Manuel','Nicolás','Facundo','Sebastián','Agustín','Brian'],l:['Valverde','Núñez','Araújo','Bentancur','Ugarte','De la Cruz','Pellistri','Cáceres','Olivera','Rodríguez']},
+ma:{f:['Achraf','Hakim','Youssef','Sofyan','Azzedine','Nayef','Romain','Bilal','Amine','Ilias'],l:['Hakimi','Ziyech','En-Nesyri','Amrabat','Ounahi','Aguerd','Saïss','El Khannouss','Harit','Chair']},
+sn:{f:['Sadio','Kalidou','Édouard','Ismaïla','Nicolas','Idrissa','Boulaye','Cheikh','Pape','Iliman'],l:['Mané','Koulibaly','Mendy','Sarr','Jackson','Gueye','Dia','Diallo','Matar','Ndiaye']},
+jp:{f:['Takumi','Daichi','Kaoru','Ritsu','Takefusa','Wataru','Hidemasa','Junya','Ao','Daizen'],l:['Minamino','Kamada','Mitoma','Doan','Kubo','Endo','Morita','Ito','Tanaka','Maeda']},
+us:{f:['Christian','Weston','Yunus','Gio','Tyler','Sergiño','Folarin','Brandon','Ricardo','Antonee'],l:['Pulisic','McKennie','Musah','Reyna','Adams','Dest','Balogun','Vazquez','Pepi','Robinson']},
+mx:{f:['Hirving','Santiago','Edson','Jesús','Raúl','Diego','Luis','César','Orbelín','Alexis'],l:['Lozano','Giménez','Álvarez','Corona','Jiménez','Lainez','Romo','Montes','Pineda','Vega']},
+ch:{f:['Granit','Manuel','Remo','Ruben','Silvan','Denis','Noah','Fabian','Michel','Zeki'],l:['Xhaka','Akanji','Freuler','Vargas','Widmer','Zakaria','Embolo','Rieder','Aebischer','Amdouni']},
+dk:{f:['Christian','Rasmus','Pierre','Joakim','Andreas','Mikkel','Morten','Jonas','Victor','Jesper'],l:['Eriksen','Højlund','Højbjerg','Mæhle','Christensen','Damsgaard','Hjulmand','Wind','Lindelöf','Lindstrøm']},
+rs:{f:['Dušan','Aleksandar','Sergej','Filip','Nikola','Strahinja','Luka','Saša','Nemanja','Predrag'],l:['Vlahović','Mitrović','Milinković-Savić','Kostić','Milenković','Pavlović','Jović','Lukić','Gudelj','Rajković']},
+pl:{f:['Robert','Piotr','Wojciech','Nicola','Jakub','Sebastian','Karol','Bartosz','Krzysztof','Damian'],l:['Lewandowski','Zieliński','Szczęsny','Zalewski','Kiwior','Szymański','Świderski','Slisz','Piątek','Szymański']},
+ua:{f:['Andriy','Mykhailo','Oleksandr','Viktor','Artem','Illia','Heorhiy','Ruslan','Vitaliy','Yukhym'],l:['Yarmolenko','Mudryk','Zinchenko','Tsygankov','Dovbyk','Zabarnyi','Sudakov','Malinovskyi','Mykolenko','Konoplia']},
+tr:{f:['Arda','Hakan','Kenan','Ferdi','Cengiz','Baris','Kerem','Orkun','Yusuf','Zeki'],l:['Güler','Çalhanoğlu','Yıldız','Kadıoğlu','Ünder','Yılmaz','Aktürkoğlu','Kökçü','Yazıcı','Çelik']},
+se:{f:['Alexander','Viktor','Dejan','Emil','Anthony','Jesper','Hugo','Viktor','Mattias','Lucas'],l:['Isak','Gyökeres','Kulusevski','Forsberg','Elanga','Karlström','Larsson','Lindelöf','Svanberg','Bergvall']},
+ru:{f:['Aleksandr','Fyodor','Matvey','Ivan','Artyom','Dmitri','Anton','Maksim','Nikita','Sergei'],l:['Golovin','Chalov','Safonov','Zakharyan','Kokorin','Batrakov','Zabolotny','Glushakov','Kuznetsov','Sobolev']},
+};
+
+const EVENTS=[
+{text:"🤕 Лёгкая травма на тренировке. Восстановление пару недель.",fn:()=>{p.pac=cl(p.pac-2);p.morale=cm(p.morale-5)}},
+{text:"🚑 Тяжёлая травма! Кресты. Скорость упала навсегда.",fn:()=>{p.pac=cl(p.pac-10);p.sho=cl(p.sho-5);p.morale=cm(p.morale-20)}},
+{text:"🍻 Скандал в клубе! Штраф €1M, доверие тренера упало.",fn:()=>{p.money-=1;p.morale=cm(p.morale-15);p.trust=cm(p.trust-20)}},
+{text:"❤️ Открыл детскую футбольную школу. Репутация выросла!",fn:()=>{p.money-=2;p.morale=cm(p.morale+15);p.trust=cm(p.trust+10)}},
+{text:"📱 Твой гол попал в топ TikTok! Популярность зашкаливает.",fn:()=>{p.morale=cm(p.morale+10);p.money+=2}},
+{text:"😡 Конфликт с тренером. Не выпускают в старте.",fn:()=>{p.trust=cm(p.trust-25);p.morale=cm(p.morale-10)}},
+{text:"🤝 Крупный спонсор предложил контракт!",fn:()=>{p.money+=15;p.morale=cm(p.morale+5)}},
+{text:"💪 Отличная предсезонка! Статы выросли.",fn:()=>{p.phy=cl(p.phy+3);p.pac=cl(p.pac+2)}},
+{text:"🎯 Тренер доверил капитанскую повязку.",fn:()=>{p.trust=cm(p.trust+15);p.morale=cm(p.morale+10)}},
+{text:"📺 Интервью обернулось скандалом.",fn:()=>{p.money-=3;p.trust=cm(p.trust-10)}},
+{text:"🎁 Фанаты признали тебя лучшим игроком месяца!",fn:()=>{p.morale=cm(p.morale+15)}},
+{text:"🔥 Ты в отличной форме! Тренер хвалит.",fn:()=>{p.form=Math.min(3,p.form+1);p.trust=cm(p.trust+10)}}
+];
+
+const POSITIONS=[
+{k:'GK',n:'ВРТ',w:{def:.5,phy:.3,pas:.1,pac:.1}},
+{k:'CB',n:'ЦЗ',w:{def:.45,phy:.3,pac:.15,pas:.1}},
+{k:'LB',n:'ЛЗ',w:{def:.3,pac:.3,phy:.2,pas:.2}},
+{k:'RB',n:'ПЗ',w:{def:.3,pac:.3,phy:.2,pas:.2}},
+{k:'CDM',n:'ОП',w:{def:.3,pas:.3,phy:.25,dri:.15}},
+{k:'CM',n:'ЦП',w:{pas:.35,dri:.25,def:.15,phy:.15,pac:.1}},
+{k:'CAM',n:'АП',w:{pas:.3,dri:.35,sho:.25,pac:.1}},
+{k:'LW',n:'ЛВ',w:{pac:.35,dri:.3,sho:.25,pas:.1}},
+{k:'RW',n:'ПВ',w:{pac:.35,dri:.3,sho:.25,pas:.1}},
+{k:'ST',n:'ЦН',w:{sho:.4,pac:.25,dri:.2,phy:.15}},
+{k:'CF',n:'ОТ',w:{sho:.3,dri:.3,pas:.2,pac:.2}},
+{k:'SS',n:'ВТ',w:{sho:.35,dri:.25,pac:.25,pas:.15}}
+];
+
+/* ============================================================
+   СОСТОЯНИЕ
+============================================================ */
+let p={};
+const $=id=>document.getElementById(id);
+const content=$('content');
+
+/* ============================================================
+   УТИЛИТЫ
+============================================================ */
+const ri=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const cl=v=>Math.min(99,Math.max(1,v));
+const cm=v=>Math.min(100,Math.max(0,v));
+const pick=a=>a[ri(0,a.length-1)];
+const calcOvr=()=>{const w=POSITIONS.find(x=>x.k===p.pos).w;let s=0;for(const k in w)s+=p[k]*w[k];return Math.round(s)};
+const formEmoji=f=>f>=2.5?'🔥🔥':f>=1.5?'🔥':f>=.5?'😊':f>=-.5?'😐':f>=-1.5?'😕':f>=-2.5?'🥶':'❄️❄️';
+const formCls=f=>f>=1.5?'form-hot':f>=.5?'form-good':f>=-.5?'form-ok':f>=-1.5?'form-bad':'form-cold';
+const flagUrl=code=>`https://flagcdn.com/w40/${code}.png`;
+const PH="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'><circle cx='20' cy='20' r='18' fill='%23333'/><text x='20' y='26' text-anchor='middle' fill='%23666' font-size='14'>?</text></svg>";
+
+const apiMap={"Спортинг":"Sporting CP","Бенфика":"Benfica","Порту":"FC Porto","Реал Мадрид":"Real Madrid","Барселона":"Barcelona","Атлетико":"Atletico Madrid","Севилья":"Sevilla","Бетис":"Real Betis","Реал Сосьедад":"Real Sociedad","Валенсия":"Valencia","Вильярреал":"Villarreal","Райо Вальекано":"Rayo Vallecano","Атлетик Бильбао":"Athletic Bilbao","Жирона":"Girona","Ман Сити":"Manchester City","Ливерпуль":"Liverpool","Арсенал":"Arsenal","Челси":"Chelsea","МЮ":"Manchester United","Тоттенхэм":"Tottenham","Ньюкасл":"Newcastle","Астон Вилла":"Aston Villa","Вест Хэм":"West Ham","Брайтон":"Brighton","Лестер":"Leicester City","Бавария":"Bayern Munich","Боруссия Д":"Borussia Dortmund","Лейпциг":"RB Leipzig","Байер":"Bayer Leverkusen","Штутгарт":"VfB Stuttgart","Айнтрахт":"Eintracht Frankfurt","Ювентус":"Juventus","Милан":"AC Milan","Интер":"Inter Milan","Наполи":"Napoli","Рома":"AS Roma","Лацио":"Lazio","Аталанта":"Atalanta","Фиорентина":"Fiorentina","ПСЖ":"Paris Saint-Germain","Марсель":"Marseille","Монако":"AS Monaco","Лион":"Lyon","Лилль":"Lille","Аякс":"Ajax","ПСВ":"PSV","Фейеноорд":"Feyenoord","Галатасарай":"Galatasaray","Фенербахче":"Fenerbahce","Бешикташ":"Besiktas","Аль-Наср":"Al-Nassr","Аль-Хиляль":"Al-Hilal","Аль-Иттихад":"Al-Ittihad","Фламенго":"Flamengo","Палмейрас":"Palmeiras","Ботафого":"Botafogo","Ривер Плейт":"River Plate","Бока Хуниорс":"Boca Juniors","Шахтёр":"Shakhtar Donetsk","Динамо Киев":"Dynamo Kyiv","Зенит":"Zenit","ЦСКА":"CSKA Moscow","Спартак":"Spartak Moscow","Краснодар":"FC Krasnodar","Локомотив":"Lokomotiv Moscow","Серветт":"Servette","Базель":"Basel","Селтик":"Celtic","Рейнджерс":"Rangers"};
+
+const logoCache={};
+async function getLogo(name){
+  if(logoCache[name])return logoCache[name];
+  const q=apiMap[name]||name;
+  try{
+    const r=await fetch(`https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=${encodeURIComponent(q)}`);
+    const d=await r.json();
+    if(d.teams&&d.teams.length){logoCache[name]=d.teams[0].strTeamBadge||PH;return logoCache[name];}
+  }catch(e){}
+  logoCache[name]=PH;return PH;
+}
+
+function save(){localStorage.setItem('mfc_pro',JSON.stringify(p));}
+function load(){const s=localStorage.getItem('mfc_pro');if(s){try{p=JSON.parse(s);return true}catch(e){}}return false}
+
+function randomName(flag){
+  const pool=NAME_POOL[flag]||NAME_POOL.es;
+  return pick(pool.f)+' '+pick(pool.l);
+}
+
+/* ============================================================
+   СТАРТОВЫЙ ЭКРАН
+============================================================ */
+let startSel={name:'',pos:'ST',nt:null};
+
+function showStart(){
+  $('statusBar').style.display='none';
+  $('statsBar').style.display='none';
+  $('timeline').style.display='none';
+  $('hdrName').innerHTML='⚽ My Career<small>PRO EDITION</small>';
+  
+  startSel.name=randomName('es');
+  startSel.pos='ST';
+  startSel.nt=NTS[0];
+  
+  content.innerHTML=`
+  <div class="start-hero fade">
+    <h1>⚽ MY CAREER PRO</h1>
+    <p>Создай свою легенду</p>
+  </div>
+  
+  <div class="card fade">
+    <div class="field-label">👤 Имя и фамилия</div>
+    <div class="input-row">
+      <input class="input-box" id="inpName" value="${startSel.name}" maxlength="30">
+      <button class="roll-btn" onclick="rollName()">🎲</button>
+    </div>
+  </div>
+  
+  <div class="card fade">
+    <div class="field-label">🎯 Позиция на поле</div>
+    <div class="pos-grid" id="posGrid">
+      ${POSITIONS.map(pos=>`<button class="pos-btn${pos.k===startSel.pos?' sel':''}" data-pos="${pos.k}" onclick="selPos('${pos.k}')">${pos.n}<br><small style="opacity:.6;font-size:.85em">${pos.k}</small></button>`).join('')}
+    </div>
+  </div>
+  
+  <div class="card fade">
+    <div class="field-label">🌍 Национальность / Сборная</div>
+    <div class="nt-grid" id="ntGrid">
+      ${NTS.map(nt=>`<button class="nt-btn${startSel.nt.name===nt.name?' sel':''}" onclick="selNT('${nt.name}')">
+        <img src="${flagUrl(nt.flag)}" onerror="this.style.display='none'">
+        <div class="nm">${nt.name}</div>
+      </button>`).join('')}
+    </div>
+  </div>
+  
+  <button class="btn" onclick="startCareer()" style="margin-top:14px;padding:14px;font-size:.9em">🚀 НАЧАТЬ КАРЬЕРУ</button>
+  `;
+}
+
+function rollName(){
+  const code=startSel.nt?startSel.nt.flag:'es';
+  startSel.name=randomName(code);
+  $('inpName').value=startSel.name;
+}
+
+function selPos(k){
+  startSel.pos=k;
+  document.querySelectorAll('.pos-btn').forEach(b=>b.classList.toggle('sel',b.dataset.pos===k));
+}
+
+function selNT(name){
+  startSel.nt=NTS.find(n=>n.name===name);
+  startSel.name=randomName(startSel.nt.flag);
+  $('inpName').value=startSel.name;
+  document.querySelectorAll('.nt-btn').forEach(b=>b.classList.toggle('sel',b.textContent.trim()===name));
+}
+
+function startCareer(){
+  const nm=$('inpName').value.trim()||startSel.name;
+  p={
+    name:nm,pos:startSel.pos,ntName:startSel.nt.name,ntFlag:startSel.nt.flag,
+    age:16,ovr:0,pac:ri(30,99),sho:ri(30,99),pas:ri(30,99),dri:ri(30,99),def:ri(30,99),phy:ri(30,99),
+    club:null,money:0,season:0,tp:3,morale:75,trust:75,form:0,injury:null,
+    tropClub:0,tropCL:0,tropNT:0,goals:0,goalsCL:0,goalsNT:0,ballonDors:0,
+    nt:null,ntQualified:false,caps:0,sponsor:0,hasYacht:false,hasInv:false,
+    history:[],clWins:0,wcWins:0,agentTrust:50,currentContract:null,qualTable:null
+  };
+  // для GK фикс
+  if(p.pos==='GK'){p.def=ri(60,99);p.phy=ri(60,99);p.pac=ri(40,80);p.sho=ri(20,50);}
+  p.club=pick(CLUBS);
+  p.ovr=calcOvr();
+  $('statusBar').style.display='grid';
+  $('statsBar').style.display='grid';
+  $('timeline').style.display='flex';
+  $('hdrName').innerHTML=`⚽ ${p.name.split(' ')[1]||p.name}<small>${p.pos} · ${p.ntName}</small>`;
+  save();render();
+  showAgentIntro();
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render(){
+  $('sAge').textContent=p.age;
+  $('sOvr').textContent=p.ovr;
+  $('sMorale').textContent=p.morale;
+  const f=$('sForm');f.textContent=formEmoji(p.form);f.className=formCls(p.form);
+  const inj=$('sInjury');
+  if(p.injury){inj.textContent=`${p.injury.name} ${p.injury.matchesLeft}м`;inj.className='injury-active';}
+  else{inj.textContent='—';inj.className='';}
+  $('stPac').textContent=p.pac;$('stSho').textContent=p.sho;$('stPas').textContent=p.pas;
+  $('stDri').textContent=p.dri;$('stDef').textContent=p.def;$('stPhy').textContent=p.phy;
+  $('stTrust').textContent=p.trust;
+  $('tClub').textContent='🏆 '+p.tropClub;
+  $('tCL').textContent='⭐ '+p.clWins;
+  $('tNT').textContent='🌍 '+(p.tropNT+p.wcWins);
+  const tl=$('timeline');tl.innerHTML='';
+  for(let a=16;a<=42;a++){
+    const d=document.createElement('div');
+    d.className='tl-age'+(a===p.age?' active':(a<p.age?' done':''));
+    d.textContent=a;tl.appendChild(d);
+  }
+  const act=tl.querySelector('.active');
+  if(act)act.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+}
+
+/* ============================================================
+   AGENT
+============================================================ */
+function showAgentIntro(){
+  content.innerHTML=`
+  <div class="agent-card fade">
+    <div class="agent-head">
+      <div class="agent-avatar">👔</div>
+      <div class="agent-name">Мистер Родригес<small>Твой агент</small></div>
+    </div>
+    <div class="agent-msg">Привет, ${p.name.split(' ')[0]}! Я твой агент. Буду искать тебе лучшие контракты. Начнём карьеру в <b>${p.club.name}</b>. Удачи!</div>
+  </div>
+  <button class="btn" onclick="showTraining()">ПРОДОЛЖИТЬ →</button>
+  `;
+}
+
+/* ============================================================
+   ТРЕНИРОВКИ
+============================================================ */
+function showTraining(){
+  if(p.age>42){showEnd();return}
+  const pos=POSITIONS.find(x=>x.k===p.pos);
+  content.innerHTML=`
+    <div class="card fade">
+      <div class="summary-bar">
+        <div>💰 Баланс<b>€${p.money}M</b></div>
+        <div>⭐ Очки<b>${p.tp}</b></div>
+        <div>📅 Сезон<b>${p.season+1}</b></div>
+      </div>
+      <div class="text-center muted mb-8">${p.name} · <span class="hl">${pos.n}</span> · <span class="hl">${p.club.name}</span>${p.nt?` · 🌍 <span class="hl">${p.nt.name}</span>`:''}</div>
+      <div class="card-title">🎯 ПРОКАЧКА — ${p.tp} очков</div>
+      <div class="train-grid">
+        ${['pac','sho','pas','dri','def','phy'].map(s=>`
+          <button class="train-btn" onclick="doTrain('${s}')">
+            <span>${({pac:'⚡СКОР',sho:'🎯УДАР',pas:'🎯ПАС',dri:'🏃ДРИБ',def:'🛡️ЗАЩ',phy:'💪ФИЗ'})[s]}</span>
+            <span class="val" id="tr_${s}">${p[s]}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="card-title" style="margin-top:10px">🛒 МАГАЗИН</div>
+      <div class="shop-grid">
+        <button class="shop-btn ${p.hasYacht?'bought':''}" onclick="buyYacht()"><b>🛥️ Яхта</b><small>${p.hasYacht?'✅ Куплено':'€10M · +10 Морали'}</small></button>
+        <button class="shop-btn ${p.hasInv?'bought':''}" onclick="buyInv()"><b>📈 Инвестиции</b><small>${p.hasInv?'✅ Куплено':'€20M · +€5M/сезон'}</small></button>
+      </div>
+      <button class="btn" onclick="nextSeason()" id="btnNext" ${p.tp>0?'disabled':''}>▶ ЗАВЕРШИТЬ СЕЗОН</button>
+      <button class="btn btn-red" onclick="resetGame()">🗑 Сбросить карьеру</button>
+    </div>`;
+  render();
+}
+
+function doTrain(stat){
+  if(p.tp<=0)return;
+  const gain=ri(1,3);
+  p[stat]=cl(p[stat]+gain);
+  p.tp--;p.ovr=calcOvr();
+  $('tr_'+stat).textContent=p[stat];
+  $('sOvr').textContent=p.ovr;
+  document.querySelector('.summary-bar div:nth-child(2) b').textContent=p.tp;
+  if(p.tp<=0)$('btnNext').disabled=false;
+}
+
+function buyYacht(){if(p.money>=10&&!p.hasYacht){p.money-=10;p.hasYacht=true;p.morale=cm(p.morale+10);showTraining()}}
+function buyInv(){if(p.money>=20&&!p.hasInv){p.money-=20;p.hasInv=true;p.sponsor+=5;showTraining()}}
+
+/* ============================================================
+   СИМУЛЯЦИЯ
+============================================================ */
+function goalProb(){
+  const base=Math.min(.92,p.ovr/110);
+  const formMult=1+p.form*.13;
+  const posMult=p.pos==='GK'?.05:p.pos==='CB'||p.pos==='LB'||p.pos==='RB'?.15:p.pos==='CDM'?.25:p.pos==='CM'?.35:p.pos==='CAM'||p.pos==='LW'||p.pos==='RW'||p.pos==='SS'?.75:1;
+  const injMult=p.injury?.5:1;
+  return Math.min(.95,base*formMult*posMult*injMult);
+}
+
+function tryInjury(){
+  let chance=.045;
+  if(p.form<=-2)chance+=.02;
+  if(p.phy<60)chance+=.015;
+  if(p.morale<40)chance+=.01;
+  if(Math.random()>chance)return null;
+  const roll=Math.random();
+  const stat=pick(['pac','sho','dri','phy']);
+  if(roll<.6)return{name:'Лёгкая',matchesLeft:ri(1,2),stat,penalty:ri(1,3),perm:false};
+  if(roll<.9)return{name:'Средняя',matchesLeft:ri(3,5),stat,penalty:ri(3,6),perm:false};
+  return{name:'Тяжёлая',matchesLeft:ri(5,9),stat,penalty:ri(3,8),perm:true};
+}
+
+function applyInjury(inj){
+  p[inj.stat]=cl(p[inj.stat]-inj.penalty);
+  p.injury={...inj};
+  p.morale=cm(p.morale-15);p.ovr=calcOvr();
+}
+
+function recoverInjury(){
+  if(!p.injury)return;
+  if(!p.injury.perm)p[p.injury.stat]=cl(p[p.injury.stat]+p.injury.penalty);
+  p.injury=null;p.ovr=calcOvr();
+}
+
+function simMatch(opp,comp,isCL){
+  if(p.injury&&p.injury.matchesLeft>0){
+    p.injury.matchesLeft--;
+    if(p.injury.matchesLeft<=0)recoverInjury();
+    return{opp:opp.name,comp,tg:0,og:0,pg:0,res:'M',missed:true,isCL,oppFlag:opp.flag};
+  }
+  const teamStr=p.club.str+(p.ovr-75)*.4;
+  const baseT=Math.max(0,Math.round((teamStr-opp.str)/22+1.4+ri(-1,1)));
+  const prob=goalProb();
+  let pg=0;
+  if(Math.random()<prob)pg++;
+  if(Math.random()<prob*.35)pg++;
+  if(Math.random()<prob*.07)pg++;
+  const tg=baseT+pg;
+  const og=Math.max(0,Math.round((opp.str-teamStr)/22+1.4+ri(-1,1)));
+  const res=tg>og?'W':tg<og?'L':'D';
+  if(!p.injury){const inj=tryInjury();if(inj)applyInjury(inj)}
+  if(pg>=2)p.form=Math.min(3,p.form+1);
+  else if(pg===1)p.form=Math.min(3,p.form+.5);
+  else if(res==='L')p.form=Math.max(-3,p.form-.5);
+  return{opp:opp.name,comp,tg,og,pg,res,missed:false,isCL,oppFlag:opp.flag};
+}
+
+/* ============================================================
+   ОТБОРОЧНЫЕ К ЧМ
+============================================================ */
+function simWCQualifiers(){
+  // Группа из 4 команд (включая игрока)
+  const pool=NTS.filter(n=>n.name!==p.ntName);
+  const group=[p.nt||{name:p.ntName,flag:p.ntFlag,str:NTS.find(n=>n.name===p.ntName).str}];
+  while(group.length<4){
+    const t=pick(pool);
+    if(!group.find(x=>x.name===t.name))group.push({name:t.name,flag:t.flag,str:t.str});
+  }
+  const table=group.map(t=>({...t,pts:0,p:0,w:0,d:0,l:0,gf:0,ga:0}));
+  const matches=[];
+  // Круговой турнир: 6 матчей
+  for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){
+    const A=group[i],B=group[j];
+    const aGoals=Math.max(0,Math.round((A.str-B.str)/15+1.4+ri(-1,1)));
+    const bGoals=Math.max(0,Math.round((B.str-A.str)/15+1.4+ri(-1,1)));
+    const tA=table.find(t=>t.name===A.name),tB=table.find(t=>t.name===B.name);
+    tA.p++;tB.p++;tA.gf+=aGoals;tA.ga+=bGoals;tB.gf+=bGoals;tB.ga+=aGoals;
+    if(aGoals>bGoals){tA.w++;tA.pts+=3;tB.l++}
+    else if(aGoals<bGoals){tB.w++;tB.pts+=3;tA.l++}
+    else{tA.d++;tB.d++;tA.pts++;tB.pts++}
+    // матч игрока
+    if(A.name===p.ntName||B.name===p.ntName){
+      const opp=A.name===p.ntName?B:A;
+      const myGoals=goalProb()>Math.random()?(goalProb()>.5?2:1):0;
+      matches.push({opp:opp.name,oppFlag:opp.flag,tg:aGoals,og:bGoals,pg:myGoals,res:aGoals>bGoals?'W':aGoals<bGoals?'L':'D',missed:false,comp:'Отбор ЧМ'});
+      p.goalsNT+=myGoals;
+    }
+  }
+  table.sort((a,b)=>b.pts-a.pts||(b.gf-b.ga)-(a.gf-a.ga));
+  const qualified=table.findIndex(t=>t.name===p.ntName)<2;
+  p.ntQualified=qualified;
+  p.qualTable=table;
+  p.caps+=matches.length;
+  return{matches,table,qualified};
+}
+
+/* ============================================================
+   ЧМ ФИНАЛЬНАЯ ЧАСТЬ
+============================================================ */
+function simWorldCup(){
+  const matches=[];
+  // Группа 4 команды, 3 матча
+  const group=[{name:p.ntName,flag:p.ntFlag,str:p.nt.str}];
+  const pool=NTS.filter(n=>n.name!==p.ntName&&!group.find(g=>g.name===n.name));
+  while(group.length<4){const t=pick(pool);if(!group.find(x=>x.name===t.name))group.push({name:t.name,flag:t.flag,str:t.str})}
+  let pts=0,gf=0,ga=0;
+  for(let i=1;i<4;i++){
+    const A=group[0],B=group[i];
+    const myGoals=goalProb()>Math.random()?(goalProb()>.5?2:1):0;
+    const tg=Math.max(0,Math.round((A.str-B.str)/15+1.5+ri(-1,1)))+myGoals;
+    const og=Math.max(0,Math.round((B.str-A.str)/15+1.5+ri(-1,1)));
+    const res=tg>og?'W':tg<og?'L':'D';
+    if(res==='W')pts+=3;else if(res==='D')pts++;
+    gf+=tg;ga+=og;
+    matches.push({opp:B.name,oppFlag:B.flag,tg,og,pg:myGoals,res,missed:false,comp:'ЧМ Группа'});
+    p.goalsNT+=myGoals;
+  }
+  const advanced=pts>=4||(pts>=3&&gf-ga>=1);
+  if(advanced){
+    // 1/8
+    let r=playKnockout(matches,'ЧМ 1/8');
+    if(r)r=playKnockout(matches,'ЧМ 1/4');
+    if(r)r=playKnockout(matches,'ЧМ 1/2');
+    if(r){
+      // Финал
+      const opp=pick(NTS.filter(n=>n.name!==p.ntName));
+      const myGoals=goalProb()>Math.random()?(goalProb()>.5?2:1):0;
+      const tg=Math.max(0,Math.round((p.nt.str-opp.str)/15+1.5+ri(-1,1)))+myGoals;
+      const og=Math.max(0,Math.round((opp.str-p.nt.str)/15+1.5+ri(-1,1)));
+      const res=tg>og?'W':tg<og?'L':'D';
+      if(res==='W'||(res==='D'&&Math.random()>.5)){
+        p.wcWins++;p.tropNT++;p.morale=cm(p.morale+30);
+      }
+      matches.push({opp:opp.name,oppFlag:opp.flag,tg,og,pg:myGoals,res:'W',missed:false,comp:'🏆 ЧМ ФИНАЛ'});
+      p.goalsNT+=myGoals;
+    }
+  }
+  p.caps+=matches.length;
+  return{matches,advanced};
+}
+
+function playKnockout(matches,comp){
+  const opp=pick(NTS.filter(n=>n.name!==p.ntName));
+  const myGoals=goalProb()>Math.random()?(goalProb()>.5?2:1):0;
+  const tg=Math.max(0,Math.round((p.nt.str-opp.str)/15+1.5+ri(-1,1)))+myGoals;
+  const og=Math.max(0,Math.round((opp.str-p.nt.str)/15+1.5+ri(-1,1)));
+  const res=tg>og?'W':tg<og?'L':'D';
+  matches.push({opp:opp.name,oppFlag:opp.flag,tg,og,pg:myGoals,res,missed:false,comp});
+  p.goalsNT+=myGoals;
+  return res!=='L';
+}
+
+/* ============================================================
+   СЕЗОН
+============================================================ */
+function simSeason(){
+  const clubMatches=[],clMatches=[],ntMatches=[];
+  let wcData=null,clResult=null;
+
+  // Клубный чемпионат (10 матчей)
+  for(let i=0;i<10;i++){
+    let opp=pick(CLUBS);while(opp.name===p.club.name)opp=pick(CLUBS);
+    clubMatches.push(simMatch(opp,'Чемпионат'));
+  }
+  
+  // Лига Чемпионов
+  if(p.club.str+(p.ovr-75)*.5>=82){
+    const topClubs=CLUBS.filter(c=>c.str>=82&&c.name!==p.club.name);
+    const gm=[];
+    for(let i=0;i<3;i++)gm.push(simMatch(pick(topClubs),'ЛЧ Группа',true));
+    const wins=gm.filter(m=>m.res==='W').length;
+    let stage='Группа',ko=[];
+    if(wins>=2){
+      const qf=simMatch(pick(topClubs),'ЛЧ 1/4',true);ko.push(qf);
+      if(qf.res!=='L'){const sf=simMatch(pick(topClubs),'ЛЧ 1/2',true);ko.push(sf);
+        if(sf.res!=='L'){const fnl=simMatch(pick(topClubs),'ЛЧ Финал',true);ko.push(fnl);
+          if(fnl.res==='W'){p.clWins++;p.tropClub++;p.morale=cm(p.morale+20);stage='🏆 ЧЕМПИОН!'}
+          else stage='Финалист'
+        }else stage='1/2'
+      }else stage='1/4'
+    }
+    clResult={groupMatches:gm,knockoutMatches:ko,advanced:wins>=2,stageReached:stage};
+    clMatches.push(...gm,...ko);
+  }
+
+  // Сборная
+  const isWC=p.age>=18&&(p.age-18)%4===0;
+  const isQual=p.age>=16&&!isWC;
+  if(p.ovr>=76){
+    if(!p.nt)p.nt={name:p.ntName,flag:p.ntFlag,str:NTS.find(n=>n.name===p.ntName).str};
+    if(isQual){
+      wcData=simWCQualifiers();
+      ntMatches.push(...wcData.matches);
+    }else if(isWC&&p.ntQualified){
+      // финальная часть
+      wcData=simWorldCup();
+      ntMatches.push(...wcData.matches);
+    }else if(isWC&&!p.ntQualified){
+      // всё равно отбор в след году
+      wcData=simWCQualifiers();
+      ntMatches.push(...wcData.matches);
+    }
+  }
+
+  const clubGoals=clubMatches.reduce((s,m)=>s+m.pg,0);
+  const clGoals=clMatches.reduce((s,m)=>s+m.pg,0);
+  const ntGoals=ntMatches.reduce((s,m)=>s+m.pg,0);
+  p.goals+=clubGoals;p.goalsCL+=clGoals;
+  // ntGoals уже добавлены в отдельных функциях
+  
+  const wins=clubMatches.filter(m=>m.res==='W').length;
+  if(wins>=7&&Math.random()>.4)p.tropClub++;
+  const seasonTotal=clubGoals+clGoals;
+  if(p.ovr>88&&seasonTotal>20&&p.tropClub>0&&Math.random()>.65){p.ballonDors++;p.morale=cm(p.morale+20)}
+  
+  p.history.push({age:p.age,club:p.club.name,goals:clubGoals,cl:p.clWins>0?'⭐':''});
+  
+  return{clubMatches,clMatches,ntMatches,clResult,wcData,isWC,isQual,clubGoals,clGoals,ntGoals};
+}
+
+/* ============================================================
+   СЛЕДУЮЩИЙ СЕЗОН
+============================================================ */
+function nextSeason(){
+  p.season++;p.age++;
+  const ev=pick(EVENTS);ev.fn();
+  p.pac=cl(p.pac+ri(-2,3));p.sho=cl(p.sho+ri(-2,4));p.pas=cl(p.pas+ri(-2,3));
+  p.dri=cl(p.dri+ri(-2,3));p.def=cl(p.def+ri(-1,2));p.phy=cl(p.phy+ri(-2,3));
+  p.ovr=calcOvr();p.form*=.6;
+  const earn=Math.round(p.ovr*ri(1,3)/10)+p.sponsor;p.money+=earn;
+  p.tp=p.age<=20?ri(3,5):p.age<=24?ri(3,4):p.age<=28?ri(2,3):1;
+  const season=simSeason();
+  save();render();
+  showSeasonRecap(season,ev);
+}
+
+/* ============================================================
+   ОТЧЁТ СЕЗОНА
+============================================================ */
+function fifaCard(m,teamName,teamFlag){
+  const cls=m.missed?'miss':m.res==='W'?'w':m.res==='L'?'l':'d';
+  const homeFlag=teamFlag?flagUrl(teamFlag):PH;
+  const awayFlag=m.oppFlag?flagUrl(m.oppFlag):PH;
+  const homeLogo=logoCache[teamName]||PH;
+  const awayLogo=logoCache[m.opp]||PH;
+  const pgTag=m.pg>0?`<span class="fifa-goal">⚽ ${p.name.split(' ')[1]||p.name} ×${m.pg}</span>`:'';
+  return`<div class="fifa-match ${cls}">
+    <div class="fifa-comp"><span>${m.comp}</span><span>${m.missed?'🤕 ПРОПУСК':'90\''}</span></div>
+    <div class="fifa-row">
+      <div class="fifa-team home"><span class="nm">${teamName}</span><img class="fifa-badge" src="${homeLogo}" onerror="this.src='${homeFlag}'"></div>
+      <div class="fifa-score">${m.missed?'—':m.tg+' : '+m.og}</div>
+      <div class="fifa-team away"><img class="fifa-badge" src="${awayLogo}" onerror="this.src='${awayFlag}'"><span class="nm">${m.opp}</span></div>
+    </div>
+    ${pgTag?`<div class="fifa-foot">${pgTag}</div>`:''}
+  </div>`;
+}
+
+function showSeasonRecap(s,ev){
+  const wins=s.clubMatches.filter(m=>m.res==='W').length;
+  const draws=s.clubMatches.filter(m=>m.res==='D').length;
+  const losses=s.clubMatches.filter(m=>m.res==='L').length;
+  const missed=s.clubMatches.filter(m=>m.missed).length;
+  
+  let html=`<div class="event-box fade"><b>📰 СОБЫТИЕ СЕЗОНА</b>${ev.text}</div>`;
+  
+  html+=`<div class="card fade"><div class="card-title">🏟️ ЧЕМПИОНАТ — ${p.club.name}</div>`;
+  s.clubMatches.slice(0,6).forEach(m=>html+=fifaCard(m,p.club.name,p.club.flag));
+  html+=`<div class="summary-bar mt-8">
+    <div>Победы<b style="color:var(--green)">${wins}</b></div>
+    <div>Ничьи<b style="color:var(--orange)">${draws}</b></div>
+    <div>Пораж<b style="color:var(--red)">${losses}</b></div>
+    <div>Голы<b style="color:var(--yellow)">${s.clubGoals}</b></div>
+  </div>`;
+  if(missed>0)html+=`<div class="muted text-center">🤕 Пропущено матчей: ${missed}</div>`;
+  html+=`</div>`;
+  
+  if(s.clMatches.length>0){
+    html+=`<div class="card fade"><div class="card-title">⭐ ЛИГА ЧЕМПИОНОВ</div>`;
+    s.clMatches.forEach(m=>html+=fifaCard(m,p.club.name,p.club.flag));
+    html+=`<div class="text-center mt-8"><b class="hl">Результат: ${s.clResult.stageReached}</b></div></div>`;
+  }else{
+    html+=`<div class="card fade text-center muted" style="font-size:.7em">⭐ ЛЧ: не квалифицировались</div>`;
+  }
+  
+  // Отбор к ЧМ
+  if(s.wcData&&s.isQual){
+    const t=s.wcData.table;
+    html+=`<div class="card fade"><div class="card-title">🌍 ОТБОР К ЧМ — Группа</div>
+      <div class="group-table">
+        <div class="gt-row head"><div>#</div><div>Команда</div><div>И</div><div>В</div><div>Н</div><div>О</div></div>
+        ${t.map((row,i)=>`<div class="gt-row${row.name===p.ntName?' you':''}${i<2?' qual':''}">
+          <div>${i+1}</div>
+          <div class="gt-name"><img src="${flagUrl(row.flag)}" onerror="this.style.display='none'">${row.name}</div>
+          <div style="text-align:center">${row.p}</div>
+          <div style="text-align:center">${row.w}</div>
+          <div style="text-align:center">${row.d}</div>
+          <div class="gt-pts">${row.pts}</div>
+        </div>`).join('')}
+      </div>
+      <div class="text-center" style="font-size:.75em;margin-top:6px">
+        ${s.wcData.qualified?'<b style="color:var(--green)">✅ ВЫШЛИ НА ЧМ!</b>':'<b style="color:var(--red)">❌ Не вышли</b>'}
+      </div>
+      ${s.ntMatches.map(m=>fifaCard(m,p.ntName,p.ntFlag)).join('')}
+    </div>`;
+  }
+  
+  // ЧМ финальная
+  if(s.wcData&&s.isWC&&s.wcData.matches){
+    html+=`<div class="card fade"><div class="card-title">🏆 ЧЕМПИОНАТ МИРА</div>`;
+    s.wcData.matches.forEach(m=>html+=fifaCard(m,p.ntName,p.ntFlag));
+    html+=`<div class="text-center mt-8"><b class="hl">${s.wcData.advanced?'Вышли из группы':'Не вышли из группы'}</b></div></div>`;
+  }
+  
+  if(s.ntMatches.length>0&&!s.wcData){
+    html+=`<div class="card fade"><div class="card-title">🌍 СБОРНАЯ ${p.ntName}</div>
+      ${s.ntMatches.map(m=>fifaCard(m,p.ntName,p.ntFlag)).join('')}
+      <div class="text-center mt-8 muted">Кэпы: ${p.caps} · Голы: <span class="hl">${p.goalsNT}</span></div>
+    </div>`;
+  }else if(p.ovr<76){
+    html+=`<div class="card fade text-center muted" style="font-size:.7em">🌍 Сборная: нужен OVR 76+</div>`;
+  }
+  
+  const totalGoals=s.clubGoals+s.clGoals+s.ntGoals;
+  html+=`<div class="card fade"><div class="card-title">📊 ИТОГИ СЕЗОНА</div>
+    <div class="summary-bar">
+      <div>Голы<b>${totalGoals}</b></div>
+      <div>Форма<b>${formEmoji(p.form)}</b></div>
+      <div>Деньги<b>€${p.money}M</b></div>
+    </div>
+    ${p.injury?`<div class="text-center" style="color:var(--red);font-size:.75em;margin-top:6px">🤕 ${p.injury.name} (ещё ${p.injury.matchesLeft})</div>`:''}
+  </div>`;
+  
+  html+=`<button class="btn" onclick="showAgent()">📞 ПОЗВОНИТЬ АГЕНТУ →</button>`;
+  content.innerHTML=html;content.scrollTop=0;
+}
+
+/* ============================================================
+   АГЕНТ - ТРАНСФЕРЫ
+============================================================ */
+async function showAgent(){
+  const numOffers=p.ovr>85?3:2;
+  const shuffled=[...CLUBS].filter(c=>c.name!==p.club.name).sort(()=>.5-Math.random());
+  const offers=shuffled.slice(0,numOffers);
+  const logos=await Promise.all(offers.map(c=>getLogo(c.name)));
+  
+  let html=`<div class="agent-card fade">
+    <div class="agent-head">
+      <div class="agent-avatar">👔</div>
+      <div class="agent-name">Мистер Родригес<small>Твой агент</small></div>
+    </div>
+    <div class="agent-msg">
+      Слушай, ${p.name.split(' ')[0]}! Тебе ${p.age}, OVR ${p.ovr}. Есть несколько вариантов на следующий сезон:
+    </div>`;
+  
+  offers.forEach((c,i)=>{
+    const price=Math.round(p.ovr*ri(2,6)/10);
+    const salary=Math.round(p.ovr*ri(3,8)/10);
+    const years=ri(2,5);
+    html+=`<div class="club-card">
+      <img class="club-logo" src="${logos[i]}" onerror="this.src='${PH}'">
+      <div class="club-info"><h3>${c.name}</h3><p>${c.country} · Сила ${c.str}</p>
+        <div class="contract-row" style="margin-top:4px"><span>💰 Трансфер: <b>€${price}M</b></span><span>📅 Контракт: <b>${years} г.</b></span></div>
+      </div>
+    </div>
+    <button class="btn" onclick="acceptOffer('${c.name}',${price},${salary},${years})">✍️ Подписать с ${c.name}</button>`;
+  });
+  
+  html+=`<button class="btn btn-gray" onclick="stayClub()">🏠 Остаться в ${p.club.name}</button>`;
+  html+=`</div>`;
+  content.innerHTML=html;content.scrollTop=0;
+}
+
+function acceptOffer(name,price,salary,years){
+  const c=CLUBS.find(x=>x.name===name);
+  if(c){
+    p.club=c;
+    p.money+=price;
+    p.sponsor+=Math.round(salary/2);
+    p.trust=cm(p.trust+10);
+    p.morale=cm(p.morale+10);
+    p.currentContract={club:name,years,salary};
+  }
+  save();showTraining();
+}
+
+function stayClub(){
+  p.money+=ri(2,10);p.trust=cm(p.trust+5);p.morale=cm(p.morale+5);
+  p.morale=cm(p.morale+5);
+  save();showTraining();
+}
+
+/* ============================================================
+   КОНЕЦ
+============================================================ */
+function showEnd(){
+  const totalGoals=p.goals+p.goalsCL+p.goalsNT;
+  let legacy='⚽ Локальный игрок';
+  if(p.ballonDors>=3&&p.wcWins>=1)legacy='🐐 ЛЕГЕНДА ФУТБОЛА';
+  else if(p.ballonDors>=2)legacy='🌟 Суперзвезда';
+  else if(p.ballonDors>=1)legacy='🥇 Обладатель ЗМ';
+  else if(p.wcWins>=1)legacy='🏆 Чемпион Мира';
+  else if(p.clWins>=1&&p.tropNT>=1)legacy='🏆 Победитель всего';
+  else if(totalGoals>250)legacy='⭐ Элитный бомбардир';
+  else if(totalGoals>150)legacy='💫 Хороший игрок';
+  else if(p.tropNT>=1)legacy='🌍 Чемпион континента';
+  
+  const hist=p.history.map(h=>`<div class="hist-item"><span>${h.age} лет · ${h.club}</span><span>⚽${h.goals} ${h.cl}</span></div>`).join('');
+  
+  content.innerHTML=`
+    <div class="end-hero fade">
+      <h2>🏁 КАРЬЕРА ЗАВЕРШЕНА</h2>
+      <div class="legacy">${legacy}</div>
+      <div class="muted">${p.name} · ${p.pos} · ${p.ntName} <img src="${flagUrl(p.ntFlag)}" style="width:18px;vertical-align:middle"></div>
+    </div>
+    <div class="end-stats">
+      <div>Возраст<b>${p.age}</b></div>
+      <div>OVR<b style="color:var(--yellow)">${p.ovr}</b></div>
+      <div>Голы клуб<b>${p.goals}</b></div>
+      <div>Голы ЛЧ<b>${p.goalsCL}</b></div>
+      <div>Голы сборная<b>${p.goalsNT}</b></div>
+      <div>Кэпы<b>${p.caps}</b></div>
+      <div>Трофеи клуба<b>${p.tropClub}</b></div>
+      <div>Лиги Чемпионов<b>${p.clWins}</b></div>
+      <div>ЧМ побед<b>${p.wcWins}</b></div>
+      <div>Золотые мячи<b>${p.ballonDors}</b></div>
+      <div>💰 Заработано<b>€${p.money}M</b></div>
+      <div>Сезонов<b>${p.season}</b></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📜 ИСТОРИЯ КАРЬЕРЫ</div>
+      <div class="history-list">${hist||'<div class="muted text-center">Нет данных</div>'}</div>
+    </div>
+    <button class="btn" onclick="resetGame()">🔄 НОВАЯ КАРЬЕРА</button>
+  `;
+  content.scrollTop=0;
+}
+
+function resetGame(){
+  localStorage.removeItem('mfc_pro');
+  location.reload();
+}
+
+/* ============================================================
+   ЗАПУСК
+============================================================ */
+if(load()&&p.name){
+  $('statusBar').style.display='grid';
+  $('statsBar').style.display='grid';
+  $('timeline').style.display='flex';
+  $('hdrName').innerHTML=`⚽ ${p.name.split(' ')[1]||p.name}<small>${p.pos} · ${p.ntName}</small>`;
+  render();
+  // Прекеш логотипов
+  Promise.all(CLUBS.slice(0,10).map(c=>getLogo(c.name)));
+  if(p.age>42)showEnd();
+  else showTraining();
+}else{
+  showStart();
+}
+</script>
+</body>
+</html>
