@@ -13,7 +13,6 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-  <script>window.onerror=function(m,u,l){alert('JS ERR:\n'+m+'\nСтрока '+l);return false;};window.addEventListener('unhandledrejection',function(e){alert('PROMISE ERR:\n'+e.reason);});</script>
 <style>
 :root{--bg:#0a0a0a;--app:#121212;--card:#1c1c1c;--card2:#242424;--green:#4caf50;--green-d:#388e3c;--blue:#2196f3;--orange:#ff9800;--red:#f44336;--purple:#7b1fa2;--yellow:#ffeb3b;--text:#e8e8e8;--muted:#888;--border:#2a2a2a;--nav-bg:rgba(30,30,42,.95);--nav-active:#2a2a3a}
 [data-theme="light"]{--bg:#e8ecf0;--app:#f0f2f5;--card:#ffffff;--card2:#f5f7fa;--text:#1a1f2e;--muted:#5f6c7f;--border:#d8dfe6;--nav-bg:rgba(255,255,255,.98);--nav-active:#e8ecf5}
@@ -3507,6 +3506,28 @@ function startGodMode(type){
 }
 
 /* ============ КОНЕЦ ФАЙЛА ============ */
+window.addEventListener('load', function(){
+  try {
+    if(!localStorage.getItem('mfc6_onboarded')){
+      showOnboarding();
+    } else {
+      const saved = load();
+      if(saved && p && p.name){
+        document.getElementById('statusBar').style.display = 'grid';
+        document.getElementById('statsBar').style.display = 'grid';
+        document.getElementById('bottomNav').style.display = 'flex';
+        document.getElementById('hdrName').innerHTML = ic('mdi:soccer') + '<span>' + (p.name.split(' ')[1]||p.name) + '<small>' + (p.pos||'—') + ' · ' + (p.ntName||'—') + '</small></span>';
+        render();
+        switchTab('home');
+      } else {
+        showMainMenu();
+      }
+    }
+  } catch(e) {
+    var c = document.getElementById('content');
+    if(c) c.innerHTML = '<div style="color:#f55;padding:20px;font-family:monospace;font-size:12px">' + e.message + '</div>';
+  }
+});
 </script>
 </body>
 </html>
