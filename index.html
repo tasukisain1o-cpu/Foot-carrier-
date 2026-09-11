@@ -1502,8 +1502,7 @@ function recoverInjury(){if(!p.injury)return;if(!p.injury.perm)p[p.injury.stat]=
 function simMatch(opp,comp){
   const r={opp:opp.name,oppFlag:opp.flag,comp,tg:0,og:0,pg:0,assist:0,yellow:0,red:0,missed:false,comment:'',derby:false};
   if(p.injury&&p.injury.matchesLeft>0){p.injury.matchesLeft--;r.missed=true;if(p.injury.matchesLeft<=0)recoverInjury();return r}
-  const derby=DERBIES.find(d=>(d.home===p.club.name&&d.away===opp.name)||(d.away===p.club.name&&d.home===opp.name));
-  r.derby=!!derby;const bonus=derby?0.15:0;
+  r.derby=false;const bonus=0;
   const baseT=Math.max(0,Math.round((p.club.str-opp.str)/22+1.4+ri(-1,1)));
   let prob=goalProb()+weatherBonus()*0.01+bonus;
   if(p._benched)prob*=0.5;
@@ -1521,7 +1520,6 @@ function simMatch(opp,comp){
   if(!p.injury){const inj=tryInjury();if(inj)applyInjury(inj)}
   if(pg>=2)p.form=Math.min(3,p.form+1);else if(pg===1)p.form=Math.min(3,p.form+.5);else if(tg<og)p.form=Math.max(-3,p.form-.5);
   if(pg>=3)p._hatTricks=(p._hatTricks||0)+1;
-  if(derby&&pg>0)p._derbyGoals=(p._derbyGoals||0)+pg;
   return r;
 }
 function recordMatch(comp,res){
